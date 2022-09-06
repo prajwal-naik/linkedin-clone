@@ -13,6 +13,7 @@
 
 .header__left { 
     display: flex;
+    /* border: 2px solid black; */
 }
 
 .header__left > img {

@@ -5,12 +5,16 @@ import { db } from './firebase.js'
 import InputOption from './InputOption'
 import Post from './Post'
 import { addDoc, collection, onSnapshot, orderBy, query, serverTimestamp } from "firebase/firestore";
+import { useSelector } from 'react-redux'
+import { selectUser } from './features/userSlice'
 
 function Feed() {
 
   const [posts, setPosts] = useState([]);
 
   const [input, setInput] = useState("");
+
+  const user = useSelector(selectUser);
 
   useEffect(() => {
     onSnapshot(query(collection(db, "posts"), orderBy("timestamp", "desc")), (snapshot) => {
@@ -27,10 +31,10 @@ function Feed() {
   const sendPost = (e) => {
     e.preventDefault();
     addDoc(collection(db, "posts"), {
-      name: "Praj Naik", 
-      description: "This is a test", 
+      name: user.displayName, 
+      description: user.email, 
       message: input,
-      photoUrl: "", 
+      photoUrl: user.photoUrl || "", 
       timestamp: serverTimestamp(),
     }).then(docRef => {
       console.log("Data added successfully: ", docRef);
@@ -67,8 +71,8 @@ function Feed() {
           message={message}
           photoUrl={photoUrl}
         />
-      ))}
-        
+        )
+      )}
     </div>
   )
 }
